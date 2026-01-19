@@ -1,0 +1,34 @@
+# Ignore system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Ignore logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore temporary files
+*.tmp
+*.temp
+.cache/
+
+# Ignore environment files
+.env
+.env.local
+.env.*.local
+
+# Ignore vendor directories (if using Composer)
+/vendor/
+
+# Ignore uploaded files (if any)
+/uploads/*
+!/uploads/.gitkeep
