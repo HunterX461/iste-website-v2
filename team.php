@@ -1,24 +1,113 @@
-<?php include 'includes/header.php'; ?>
-<?php include 'includes/navbar.php'; ?>
+<?php
+// ==========================================
+// TEAM DATA CONFIGURATION
+// ==========================================
+
+// 1. CORE TEAM (The Main Board)
+$core_members = [
+    ['name' => 'Adil',     'role' => 'Chairperson'],
+    ['name' => 'Shamma',   'role' => 'Vice Chairperson'],
+    ['name' => 'Sufiyan',   'role' => 'Secretary'],
+    ['name' => 'Annam',    'role' => 'Jt. Secretary'],
+    ['name' => 'Madiha',   'role' => 'Convenor'],
+    ['name' => 'Nabeela',  'role' => 'Co-Convenor'],
+    ['name' => 'Mohammed',  'role' => 'Treasurer'],
+    ['name' => 'Atik',     'role' => 'Jt. Treasurer'],
+];
+
+// 2. COMMITTEES (Heads, Jt. Heads & Members)
+$committees = [
+    'Creative Team' => [
+        'leads' => [
+            ['name' => 'Midhat',  'role' => 'Head'],
+            ['name' => 'Tehzeeb', 'role' => 'Jt. Head']
+        ],
+        'members' => ['Fatima', 'Ismail', 'Ayaan']
+    ],
+    'Social Media' => [
+        'leads' => [
+            ['name' => 'Mohammed', 'role' => 'Head'],
+            ['name' => 'Tania',    'role' => 'Jt. Head']
+        ],
+        'members' => ['Sohail', 'Mariya', 'Uzair']
+    ],
+    'Web & Tech' => [
+        'leads' => [
+            ['name' => 'Tabrez', 'role' => 'Head'],
+            ['name' => 'Faizan', 'role' => 'Jt. Head']
+        ],
+        'members' => ['Bilal', 'Mosaad', 'Prem']
+    ],
+    'Content & Documentation' => [
+        'leads' => [
+            ['name' => 'Fouziya', 'role' => 'Head'],
+            ['name' => 'Amina',   'role' => 'Jt. Head']
+        ],
+        'members' => ['Shams', 'Hamza', 'Mansoor']
+    ],
+    'Logistics & Hospitality' => [
+        'leads' => [
+            ['name' => 'Faazil', 'role' => 'Head'],
+            ['name' => 'Bazgha', 'role' => 'Jt. Head']
+        ],
+        'members' => ['Furqan', 'Sulaim', 'Shayan']
+    ],
+    'Operation' => [
+        'leads' => [
+            ['name' => 'Yasir',   'role' => 'Head'],
+            ['name' => 'Afsheen', 'role' => 'Jt. Head']
+        ],
+        'members' => ['Naverah', 'Saif', 'Madiha']
+    ],
+    'PR & Sponsors' => [
+        'leads' => [
+            ['name' => 'Yash',    'role' => 'Head'],
+            ['name' => 'Mariyam', 'role' => 'Jt. Head']
+        ],
+        'members' => ['Kaseeb', 'Samiksha', 'RamAshish']
+    ],
+];
+
+// Helper function to generate image paths automatically
+// Format: assets/img/team/role-name.jpg (e.g., chairperson-adil.jpg, web-head-tabrez.jpg)
+function getTeamImage($name, $role, $context = '') {
+    $cleanRole = strtolower(str_replace(['.', ' '], ['','-'], $role));
+    $cleanName = strtolower($name);
+    $prefix = $context ? strtolower(explode(' ', $context)[0]) . '-' : ''; 
+    return "assets/img/team/" . $prefix . $cleanRole . "-" . $cleanName . ".jpg";
+}
+
+include 'includes/header.php';
+include 'includes/navbar.php';
+?>
 
 <style>
-    .team-section {
-        margin-bottom: 4rem;
-    }
-
+    /* PRESERVING YOUR ORIGINAL CSS STYLES */
+    .team-section { margin-bottom: 4rem; }
     .team-section-title {
         font-size: 2rem;
         color: var(--neon-cyan);
-        margin-bottom: 2rem;
+        margin-bottom: 3rem;
         text-align: center;
         text-transform: uppercase;
         letter-spacing: 2px;
+        position: relative;
     }
-
+    .team-section-title::after {
+        content: '';
+        display: block;
+        width: 60px;
+        height: 3px;
+        background: var(--neon-blue);
+        margin: 10px auto 0;
+        box-shadow: 0 0 10px var(--neon-blue);
+    }
+    
     .team-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 2rem;
+        justify-content: center;
     }
 
     .team-card {
@@ -29,35 +118,20 @@
         text-align: center;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
+        backdrop-filter: blur(5px);
     }
 
     .team-card:hover {
-        transform: translateY(-15px);
+        transform: translateY(-10px);
         border-color: var(--neon-blue);
-        box-shadow: 0 15px 40px rgba(0, 243, 255, 0.3);
+        box-shadow: 0 10px 30px rgba(0, 243, 255, 0.2);
     }
 
     .team-photo {
-        width: 150px;
-        height: 150px;
+        width: 140px;
+        height: 140px;
         margin: 0 auto 1.5rem;
         position: relative;
-    }
-
-    .team-photo::before {
-        content: '';
-        position: absolute;
-        inset: -4px;
-        background: linear-gradient(135deg, var(--neon-blue), var(--neon-violet));
-        border-radius: 50%;
-        z-index: -1;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .team-card:hover .team-photo::before {
-        opacity: 1;
-        animation: rotate 10s linear infinite;
     }
 
     .team-photo img {
@@ -65,301 +139,173 @@
         height: 100%;
         border-radius: 50%;
         object-fit: cover;
-        border: 3px solid var(--glass-border);
+        border: 2px solid var(--neon-cyan);
+        box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
     }
 
     .team-name {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
         color: var(--text-primary);
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.3rem;
         font-family: 'Orbitron', sans-serif;
     }
 
     .team-role {
         color: var(--neon-cyan);
-        font-size: 1rem;
+        font-size: 0.9rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 1px;
         margin-bottom: 1rem;
     }
 
-    .team-bio {
-        color: var(--text-secondary);
-        font-size: 0.95rem;
-        line-height: 1.6;
-        margin-bottom: 1.5rem;
-    }
-
     .team-social {
         display: flex;
         justify-content: center;
-        gap: 1rem;
+        gap: 0.8rem;
     }
 
     .social-icon {
-        width: 40px;
-        height: 40px;
+        width: 35px;
+        height: 35px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: var(--glass-bg);
-        border: 1px solid var(--glass-border);
+        background: rgba(255,255,255,0.05);
         border-radius: 50%;
         color: var(--neon-cyan);
-        text-decoration: none;
-        transition: all 0.3s ease;
+        transition: all 0.3s;
+        border: 1px solid transparent;
     }
 
     .social-icon:hover {
         background: var(--neon-cyan);
-        color: var(--bg-primary);
-        box-shadow: 0 0 15px var(--neon-cyan);
-        transform: translateY(-3px);
+        color: #000;
+        box-shadow: 0 0 10px var(--neon-cyan);
     }
 
-    /* Faculty Coordinator - Larger Card */
-    .faculty-card {
-        max-width: 500px;
-        margin: 0 auto;
+    /* Styles for the Members Text List */
+    .members-list {
+        grid-column: 1 / -1;
+        background: rgba(0, 243, 255, 0.05);
+        border: 1px solid rgba(0, 243, 255, 0.1);
+        padding: 1.5rem;
+        border-radius: var(--radius-sm);
+        margin-top: 1rem;
+        text-align: center;
+    }
+    
+    .members-list h4 {
+        font-size: 1.1rem;
+        color: var(--neon-violet);
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
-    .faculty-card .team-photo {
-        width: 180px;
-        height: 180px;
+    .member-pill {
+        display: inline-block;
+        padding: 0.5rem 1.2rem;
+        margin: 0.3rem;
+        background: rgba(0,0,0,0.4);
+        border: 1px solid var(--glass-border);
+        border-radius: 50px;
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        transition: all 0.3s ease;
+    }
+
+    .member-pill:hover {
+        border-color: var(--neon-blue);
+        color: var(--neon-cyan);
+        transform: translateY(-2px);
     }
 </style>
 
-<!-- PAGE HEADER -->
 <div class="page-header">
     <div class="container">
         <h1 class="fade-in-down">Our Team</h1>
-        <p class="fade-in-up">Meet the dedicated individuals driving innovation and excellence at ISTE</p>
+        <p class="fade-in-up">Meet the brilliant minds behind ISTE Student Chapter</p>
     </div>
 </div>
 
-<!-- MAIN CONTENT -->
 <section class="section">
     <div class="container">
 
-        <!-- Faculty Coordinator -->
         <div class="team-section reveal">
             <h2 class="team-section-title">Faculty Coordinator</h2>
-            <div class="team-card faculty-card">
+            <div class="team-card faculty-card" style="max-width: 400px; margin: 0 auto;">
                 <div class="team-photo">
-                    <img src="assets/images/placeholder-team/faculty.jpg" alt="Dr. Faculty Name"
+                    <img src="assets/images/placeholder-team/faculty.jpg" alt="Faculty"
                         onerror="this.src='https://ui-avatars.com/api/?name=Faculty+Coordinator&background=0D1117&color=00f3ff&size=150&bold=true'">
                 </div>
                 <h3 class="team-name">Dr. [Faculty Name]</h3>
                 <p class="team-role">Faculty Coordinator</p>
-                <p class="team-bio">
-                    Professor in the Department of Computer Science & Engineering with expertise in
-                    IoT, Cybersecurity, and Blockchain. Dedicated to guiding students towards
-                    technical excellence and innovation.
-                </p>
                 <div class="team-social">
-                    <a href="#" class="social-icon" title="Email" aria-label="Email">
-                        <i class="fas fa-envelope"></i>
-                    </a>
-                    <a href="#" class="social-icon" title="LinkedIn" aria-label="LinkedIn">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
+                    <a href="#" class="social-icon"><i class="fas fa-envelope"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
         </div>
 
-        <!-- Core Team -->
         <div class="team-section reveal">
-            <h2 class="team-section-title">Core Team 2025-26</h2>
+            <h2 class="team-section-title">Core Committee</h2>
             <div class="team-grid">
-
-                <!-- Chairperson -->
+                <?php foreach($core_members as $member): ?>
                 <div class="team-card">
                     <div class="team-photo">
-                        <img src="assets/images/placeholder-team/chairperson.jpg" alt="Chairperson"
-                            onerror="this.src='https://ui-avatars.com/api/?name=Chairperson&background=0D1117&color=00f3ff&size=150&bold=true'">
+                        <img src="<?php echo getTeamImage($member['name'], $member['role']); ?>" 
+                             alt="<?php echo $member['name']; ?>"
+                             onerror="this.src='https://ui-avatars.com/api/?name=<?php echo urlencode($member['name']); ?>&background=0D1117&color=00f3ff&size=150&bold=true'">
                     </div>
-                    <h3 class="team-name">[Name]</h3>
-                    <p class="team-role">Chairperson</p>
-                    <p class="team-bio">Leading the chapter with vision and dedication towards technical excellence.</p>
+                    <h3 class="team-name"><?php echo $member['name']; ?></h3>
+                    <p class="team-role"><?php echo $member['role']; ?></p>
+                    
                     <div class="team-social">
-                        <a href="#" class="social-icon" title="LinkedIn" aria-label="LinkedIn">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                        <a href="#" class="social-icon" title="GitHub" aria-label="GitHub">
-                            <i class="fab fa-github"></i>
-                        </a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
-
-                <!-- Vice Chairperson -->
-                <div class="team-card">
-                    <div class="team-photo">
-                        <img src="assets/images/placeholder-team/vice-chair.jpg" alt="Vice Chairperson"
-                            onerror="this.src='https://ui-avatars.com/api/?name=Vice+Chair&background=0D1117&color=b000ff&size=150&bold=true'">
-                    </div>
-                    <h3 class="team-name">[Name]</h3>
-                    <p class="team-role">Vice Chairperson</p>
-                    <p class="team-bio">Supporting leadership and coordinating technical events and workshops.</p>
-                    <div class="team-social">
-                        <a href="#" class="social-icon" title="LinkedIn" aria-label="LinkedIn">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                        <a href="#" class="social-icon" title="GitHub" aria-label="GitHub">
-                            <i class="fab fa-github"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Secretary -->
-                <div class="team-card">
-                    <div class="team-photo">
-                        <img src="assets/images/placeholder-team/secretary.jpg" alt="Secretary"
-                            onerror="this.src='https://ui-avatars.com/api/?name=Secretary&background=0D1117&color=00fff5&size=150&bold=true'">
-                    </div>
-                    <h3 class="team-name">[Name]</h3>
-                    <p class="team-role">Secretary</p>
-                    <p class="team-bio">Managing communications and maintaining chapter documentation.</p>
-                    <div class="team-social">
-                        <a href="#" class="social-icon" title="LinkedIn" aria-label="LinkedIn">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                        <a href="#" class="social-icon" title="GitHub" aria-label="GitHub">
-                            <i class="fab fa-github"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Treasurer -->
-                <div class="team-card">
-                    <div class="team-photo">
-                        <img src="assets/images/placeholder-team/treasurer.jpg" alt="Treasurer"
-                            onerror="this.src='https://ui-avatars.com/api/?name=Treasurer&background=0D1117&color=00ff88&size=150&bold=true'">
-                    </div>
-                    <h3 class="team-name">[Name]</h3>
-                    <p class="team-role">Treasurer</p>
-                    <p class="team-bio">Managing finances and ensuring proper allocation of chapter resources.</p>
-                    <div class="team-social">
-                        <a href="#" class="social-icon" title="LinkedIn" aria-label="LinkedIn">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                        <a href="#" class="social-icon" title="GitHub" aria-label="GitHub">
-                            <i class="fab fa-github"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Technical Head -->
-                <div class="team-card">
-                    <div class="team-photo">
-                        <img src="assets/images/placeholder-team/tech-head.jpg" alt="Technical Head"
-                            onerror="this.src='https://ui-avatars.com/api/?name=Tech+Head&background=0D1117&color=ff00ff&size=150&bold=true'">
-                    </div>
-                    <h3 class="team-name">[Name]</h3>
-                    <p class="team-role">Technical Head</p>
-                    <p class="team-bio">Leading technical workshops and managing development projects.</p>
-                    <div class="team-social">
-                        <a href="#" class="social-icon" title="LinkedIn" aria-label="LinkedIn">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                        <a href="#" class="social-icon" title="GitHub" aria-label="GitHub">
-                            <i class="fab fa-github"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Events Coordinator -->
-                <div class="team-card">
-                    <div class="team-photo">
-                        <img src="assets/images/placeholder-team/events.jpg" alt="Events Coordinator"
-                            onerror="this.src='https://ui-avatars.com/api/?name=Events+Lead&background=0D1117&color=00f3ff&size=150&bold=true'">
-                    </div>
-                    <h3 class="team-name">[Name]</h3>
-                    <p class="team-role">Events Coordinator</p>
-                    <p class="team-bio">Planning and executing engaging events, hackathons, and seminars.</p>
-                    <div class="team-social">
-                        <a href="#" class="social-icon" title="LinkedIn" aria-label="LinkedIn">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                        <a href="#" class="social-icon" title="GitHub" aria-label="GitHub">
-                            <i class="fab fa-github"></i>
-                        </a>
-                    </div>
-                </div>
-
+                <?php endforeach; ?>
             </div>
         </div>
 
-        <!-- Volunteers -->
+        <?php foreach($committees as $teamName => $data): ?>
         <div class="team-section reveal">
-            <h2 class="team-section-title">Volunteers</h2>
+            <h2 class="team-section-title"><?php echo $teamName; ?></h2>
+            
             <div class="team-grid">
-
+                <?php foreach($data['leads'] as $lead): ?>
                 <div class="team-card">
                     <div class="team-photo">
-                        <img src="assets/images/placeholder-team/volunteer1.jpg" alt="Volunteer"
-                            onerror="this.src='https://ui-avatars.com/api/?name=Volunteer+1&background=0D1117&color=00f3ff&size=150'">
+                        <img src="<?php echo getTeamImage($lead['name'], $lead['role'], $teamName); ?>" 
+                             alt="<?php echo $lead['name']; ?>"
+                             onerror="this.src='https://ui-avatars.com/api/?name=<?php echo urlencode($lead['name']); ?>&background=0D1117&color=b000ff&size=150&bold=true'">
                     </div>
-                    <h3 class="team-name">[Volunteer Name]</h3>
-                    <p class="team-role">Volunteer</p>
+                    <h3 class="team-name"><?php echo $lead['name']; ?></h3>
+                    <p class="team-role"><?php echo $lead['role']; ?></p>
+                    
                     <div class="team-social">
-                        <a href="#" class="social-icon" title="LinkedIn" aria-label="LinkedIn">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
+                <?php endforeach; ?>
 
-                <div class="team-card">
-                    <div class="team-photo">
-                        <img src="assets/images/placeholder-team/volunteer2.jpg" alt="Volunteer"
-                            onerror="this.src='https://ui-avatars.com/api/?name=Volunteer+2&background=0D1117&color=b000ff&size=150'">
-                    </div>
-                    <h3 class="team-name">[Volunteer Name]</h3>
-                    <p class="team-role">Volunteer</p>
-                    <div class="team-social">
-                        <a href="#" class="social-icon" title="LinkedIn" aria-label="LinkedIn">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                    </div>
+                <?php if(!empty($data['members'])): ?>
+                <div class="members-list">
+                    <h4>Team Members</h4>
+                    <?php foreach($data['members'] as $memberName): ?>
+                        <span class="member-pill"><?php echo $memberName; ?></span>
+                    <?php endforeach; ?>
                 </div>
-
-                <div class="team-card">
-                    <div class="team-photo">
-                        <img src="assets/images/placeholder-team/volunteer3.jpg" alt="Volunteer"
-                            onerror="this.src='https://ui-avatars.com/api/?name=Volunteer+3&background=0D1117&color=00fff5&size=150'">
-                    </div>
-                    <h3 class="team-name">[Volunteer Name]</h3>
-                    <p class="team-role">Volunteer</p>
-                    <div class="team-social">
-                        <a href="#" class="social-icon" title="LinkedIn" aria-label="LinkedIn">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="team-card">
-                    <div class="team-photo">
-                        <img src="assets/images/placeholder-team/volunteer4.jpg" alt="Volunteer"
-                            onerror="this.src='https://ui-avatars.com/api/?name=Volunteer+4&background=0D1117&color=00ff88&size=150'">
-                    </div>
-                    <h3 class="team-name">[Volunteer Name]</h3>
-                    <p class="team-role">Volunteer</p>
-                    <div class="team-social">
-                        <a href="#" class="social-icon" title="LinkedIn" aria-label="LinkedIn">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                    </div>
-                </div>
-
+                <?php endif; ?>
             </div>
         </div>
+        <?php endforeach; ?>
 
-        <!-- Join CTA -->
         <div class="text-center mt-3 reveal">
-            <h3 style="margin-bottom: 1.5rem;">Want to Join Our Team?</h3>
-            <p style="max-width: 600px; margin: 0 auto 2rem; color: var(--text-secondary);">
-                We're always looking for passionate individuals to join our team and contribute to the tech community.
-            </p>
+            <h3 style="margin-bottom: 1.5rem; color: var(--text-primary);">Want to Join Our Team?</h3>
             <a href="contact.php" class="btn btn-primary btn-pulse">
                 <i class="fas fa-user-plus"></i> Get Involved
             </a>
