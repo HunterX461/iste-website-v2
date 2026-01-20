@@ -239,7 +239,7 @@ include 'includes/navbar.php';
                     <img src="assets/images/placeholder-team/faculty.jpg" alt="Faculty"
                         onerror="this.src='https://ui-avatars.com/api/?name=Faculty+Coordinator&background=0D1117&color=00f3ff&size=150&bold=true'">
                 </div>
-                <h3 class="team-name">Dr. [Faculty Name]</h3>
+                <h3 class="team-name">Er. Samana Jafri</h3>
                 <p class="team-role">Faculty Coordinator</p>
                 <div class="team-social">
                     <a href="#" class="social-icon"><i class="fas fa-envelope"></i></a>
